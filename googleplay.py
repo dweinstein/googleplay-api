@@ -115,9 +115,9 @@ class GooglePlayAPI(object):
                                 "androidId": self.androidId,
                                 "app": "com.android.vending",
                                 #"client_sig": self.client_sig,
-                                "device_country": "fr",
-                                "operatorCountry": "fr",
-                                "lang": "fr",
+                                "device_country": "us",
+                                "operatorCountry": "us",
+                                "lang": "us",
                                 "sdk_version": "16"}
             headers = {
                 "Accept-Encoding": "",
@@ -144,10 +144,15 @@ class GooglePlayAPI(object):
                                     "Authorization": "GoogleLogin auth=%s" % self.authSubToken,
                                     "X-DFE-Enabled-Experiments": "cl:billing.select_add_instrument_by_default",
                                     "X-DFE-Unsupported-Experiments": "nocache:billing.use_charging_poller,market_emails,buyer_currency,prod_baseline,checkin.set_asset_paid_app_field,shekel_test,content_ratings,buyer_currency_in_app,nocache:encrypted_apk,recent_changes",
+#                                    "X-DFE-Unsupported-Experiments": "nocache:dfe:dc:1,nocache:dfe:uc:US,buyer_currency,buyer_currency_in_app,checkin.set_asset_paid_app_field,cl:billing.purchase_button_show_wallet_icon,cl:billing.select_add_instrument_by_default,cl:warm_welcome.enable,content_ratings,localized_images,market_emails,new_merchant_signup,nocache:billing.use_charging_poller,nocache:billing.use_provisioning_poller,nocache:billing.use_provisioning_poller_inapp,nocache:billing.use_provisioning_poller_subs,nocache:cl:warm_welcome.no_show_consumption_button,nocache:enable_play_country,nocache:enable_tablet_large,nocache:encrypted_apk,nocache:recs:automated_weight_adjuster_09,nocache:recs:books_annotate_merch_collection_20130620_25,nocache:recs:movies_annotate_merch_collection_20130620_00,nocache:recs:weights_books_20130219_30,nocache:recs:weights_movies_20130614_40,nocache:use_gaia_mint_instead_of_checkout_auth_token,nocache:user_challenge,prod_locale_boost,recent_changes,recs:books_portrait_20121210_50,shekel_test,toplist-kansas",
                                     "X-DFE-Device-Id": self.androidId,
                                     "X-DFE-Client-Id": "am-android-google",
                                     #"X-DFE-Logging-Id": self.loggingId2, # Deprecated?
-                                    "User-Agent": "Android-Finsky/3.7.13 (api=3,versionCode=8013013,sdk=16,device=crespo,hardware=herring,product=soju)",
+                                    #"User-Agent": "Android-Finsky/3.7.13 (api=3,versionCode=8013013,sdk=16,device=crespo,hardware=herring,product=soju)",
+                                    #"User-Agent": "Android-Finsky/3.10.14 (api=3,versionCode=8016014,sdk=15,device=GT-I9300,hardware=aries,product=GT-I9300)",
+                                    #"User-Agent": "Android-Finsky/4.1.6 (api=3,versionCode=80210006,sdk=16,device=GT-I9300,hardware=aries,product=GT-I9300)",
+                                    #"User-Agent": "Android-Finsky/4.3.11 (api=3,versionCode=80210006,sdk=16,device=GT-I9300,hardware=aries,product=GT-I9300)",
+                                    "User-Agent": "Android-Finsky/4.3.11 (api=3,versionCode=80230011,sdk=17,device=toro,hardware=tuna,product=mysid)",
                                     "X-DFE-SmallestScreenWidthDp": "320",
                                     "X-DFE-Filter-Level": "3",
                                     "Accept-Encoding": "",
@@ -252,7 +257,7 @@ class GooglePlayAPI(object):
         message = self.executeRequestApi2(path)
         return message.payload.reviewResponse
     
-    def download(self, packageName, versionCode, offerType=1):
+    def download(self, packageName, versionCode, offerType=1, stream=False):
         """Download an app and return its raw data (APK file).
 
         packageName is the app unique ID (usually starting with 'com.').
@@ -271,10 +276,14 @@ class GooglePlayAPI(object):
         }
 
         headers = {
-                   "User-Agent" : "AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)",
-                   "Accept-Encoding": "",
-                  }
+                   #"User-Agent" : "AndroidDownloadManager/4.1.1 (Linux; U; Android 4.1.1; Nexus S Build/JRO03E)",
+            "User-Agent" : "AndroidDownloadManager/4.2.2 (Linux; U; Android 4.2.2; Galaxy Nexus Build/JDQ39)",
+            "Accept-Encoding": "",
+        }
+        
+        response = requests.get(url, headers=headers, cookies=cookies, verify=False, stream=stream)
+        if stream:
+            return response.raw
 
-        response = requests.get(url, headers=headers, cookies=cookies, verify=False)
         return response.content
 
