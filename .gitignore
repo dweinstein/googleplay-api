@@ -9,3 +9,4 @@
 *.apk
 
 config.py
+downloads/manifest.txt
